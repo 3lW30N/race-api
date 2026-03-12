@@ -1,4 +1,4 @@
-package com.takima.race.runner.entities;
+package com.takima.race.runner;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

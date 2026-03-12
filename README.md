@@ -14,6 +14,14 @@ Les données devront être **persistées dans une base de données PostgreSQL**.
 
 ---
 
+# Choix techniques et ajouts :
+
+- Utilisation de DTOs
+- Création de tests PostMan pour lancer tous les tests d'API d'un coup
+- Mise en place de **Controller decomposition by resource nesting** pour une meilleure scalabilité
+
+---
+
 # Contexte
 
 Une organisation sportive souhaite mettre en place une plateforme permettant de gérer les inscriptions à différentes courses.
@@ -388,14 +396,6 @@ Si un **runner** ou une **race** n'existe pas :
 
 ---
 
-# Conseils
-
-* Implémentez l'API **progressivement**
-* Testez vos endpoints avec Postman
-* Vérifiez les données directement dans **Adminer**
-
----
-
 # Bonus (optionnel)
 
 Si vous avez terminé le TP, vous pouvez ajouter un filtre 
@@ -408,15 +408,3 @@ GET /races?location=Paris
 ```
 
 ---
-
-# Livrables
-
-Vous devez rendre :
-
-* le **code source**
-* un **README expliquant comment lancer le projet**
-* les **endpoints implémentés**
-
----
-
-Bon développement !

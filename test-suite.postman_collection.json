@@ -1,0 +1,1251 @@
+{
+  "info": {
+    "_postman_id": "17c0c461-f8cf-4e3f-8524-1ae6958a3cbf",
+    "name": "Race API — TP Spring Boot",
+    "description": "Collection de tests complète pour l'API de gestion d'inscriptions à des courses. Exécuter dans l'ordre pour un test de bout en bout.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "38595480"
+  },
+  "item": [
+    {
+      "name": "🏃 Runners",
+      "item": [
+        {
+          "name": "GET /runners — liste vide initiale",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Réponse est un tableau', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/runners",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "runners"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /runners — créer Alice",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Runner créé avec id', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('id');",
+                  "  pm.expect(body.firstName).to.eql('Alice');",
+                  "  pm.expect(body.email).to.eql('alice.martin@example.com');",
+                  "  pm.collectionVariables.set('runnerId1', body.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Alice\",\n  \"lastName\": \"Martin\",\n  \"email\": \"alice.martin@example.com\",\n  \"age\": 30\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/runners",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "runners"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /runners — créer Bob",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Runner Bob créé', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.firstName).to.eql('Bob');",
+                  "  pm.collectionVariables.set('runnerId2', body.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Bob\",\n  \"lastName\": \"Dupont\",\n  \"email\": \"bob.dupont@example.com\",\n  \"age\": 25\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/runners",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "runners"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /runners — ❌ email invalide (sans @)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 400 — email invalide', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Hack\",\n  \"lastName\": \"Test\",\n  \"email\": \"emailsansarobase\",\n  \"age\": 20\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/runners",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "runners"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /runners/{id} — récupérer Alice",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Retourne Alice', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.firstName).to.eql('Alice');",
+                  "  pm.expect(body.id).to.eql(pm.collectionVariables.get('runnerId1'));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/runners/{{runnerId1}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "runners",
+                "{{runnerId1}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /runners/{id} — ❌ runner inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 404', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/runners/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "runners",
+                "999999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /runners/{id} — modifier Alice",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 ou 201', () => {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "pm.test('Age mis à jour', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.age).to.eql(31);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Alice\",\n  \"lastName\": \"Martin\",\n  \"email\": \"alice.martin@example.com\",\n  \"age\": 31\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/runners/{{runnerId1}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "runners",
+                "{{runnerId1}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /runners/{id} — ❌ runner inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 404', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Ghost\",\n  \"lastName\": \"Runner\",\n  \"email\": \"ghost@example.com\",\n  \"age\": 40\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/runners/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "runners",
+                "999999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /runners — liste avec 2 coureurs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Au moins 2 coureurs', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.length).to.be.at.least(2);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/runners",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "runners"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏁 Races",
+      "item": [
+        {
+          "name": "GET /races — liste vide initiale",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Réponse est un tableau', () => {",
+                  "  pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/races",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /races — créer Semi-marathon Paris",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Race créée avec id', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('id');",
+                  "  pm.expect(body.name).to.eql('Semi-marathon de Paris');",
+                  "  pm.collectionVariables.set('raceId1', body.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Semi-marathon de Paris\",\n  \"date\": \"2026-06-01\",\n  \"location\": \"Paris\",\n  \"maxParticipants\": 500\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/races",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /races — créer course avec maxParticipants=1 (pour test complet)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Race complète créée', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('id');",
+                  "  pm.collectionVariables.set('raceIdFull', body.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Course Limitée\",\n  \"date\": \"2026-07-01\",\n  \"location\": \"Lyon\",\n  \"maxParticipants\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/races",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /races — créer Marathon Lyon",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Race Lyon créée', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.collectionVariables.set('raceId2', body.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Marathon de Lyon\",\n  \"date\": \"2026-09-15\",\n  \"location\": \"Lyon\",\n  \"maxParticipants\": 300\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/races",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /races/{id} — récupérer Semi-marathon Paris",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Retourne la bonne course', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.name).to.eql('Semi-marathon de Paris');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/races/{{raceId1}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races",
+                "{{raceId1}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /races/{id} — ❌ course inexistante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 404', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/races/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races",
+                "999999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /races?location=Paris — bonus filtre",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Toutes les courses sont à Paris', () => {",
+                  "  const body = pm.response.json();",
+                  "  body.forEach(race => {",
+                  "    pm.expect(race.location.toLowerCase()).to.include('paris');",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "?location=Paris",
+              "query": [
+                {
+                  "key": "location",
+                  "value": "Paris"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /races — liste complète",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Au moins 3 courses', () => {",
+                  "  pm.expect(pm.response.json().length).to.be.at.least(3);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/races",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📋 Registrations",
+      "item": [
+        {
+          "name": "GET /races/{id}/participants/count — 0 avant inscription",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Count est 0', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('count');",
+                  "  pm.expect(body.count).to.eql(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/races/{{raceId1}}/participants/count",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races",
+                "{{raceId1}}",
+                "participants",
+                "count"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /races/{id}/registrations — inscrire Alice",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"runnerId\": {{runnerId1}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/races/{{raceId1}}/registrations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races",
+                "{{raceId1}}",
+                "registrations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /races/{id}/registrations — ❌ double inscription Alice",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 409 — double inscription', () => pm.response.to.have.status(409));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"runnerId\": {{runnerId1}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/races/{{raceId1}}/registrations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races",
+                "{{raceId1}}",
+                "registrations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /races/{id}/registrations — inscrire Bob",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"runnerId\": {{runnerId2}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/races/{{raceId1}}/registrations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races",
+                "{{raceId1}}",
+                "registrations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /races/{id}/participants/count — 2 après inscriptions",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Count est 2', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.count).to.eql(2);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/races/{{raceId1}}/participants/count",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races",
+                "{{raceId1}}",
+                "participants",
+                "count"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /races/{id}/registrations — participants de la course",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('2 participants', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.be.an('array');",
+                  "  pm.expect(body.length).to.eql(2);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/races/{{raceId1}}/registrations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races",
+                "{{raceId1}}",
+                "registrations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /races/{id}/registrations — inscrire Alice à course limitée",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"runnerId\": {{runnerId1}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/races/{{raceIdFull}}/registrations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races",
+                "{{raceIdFull}}",
+                "registrations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /races/{id}/registrations — ❌ course complète (Bob)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 409 — course complète', () => pm.response.to.have.status(409));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"runnerId\": {{runnerId2}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/races/{{raceIdFull}}/registrations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races",
+                "{{raceIdFull}}",
+                "registrations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /races/{id}/registrations — ❌ runner inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 404 — runner inexistant', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"runnerId\": 999999\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/races/{{raceId2}}/registrations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races",
+                "{{raceId2}}",
+                "registrations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /races/{id}/registrations — ❌ course inexistante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 404 — course inexistante', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"runnerId\": {{runnerId1}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/races/999999/registrations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races",
+                "999999",
+                "registrations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /races/{id}/participants/count — ❌ course inexistante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 404', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/races/999999/participants/count",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races",
+                "999999",
+                "participants",
+                "count"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /races/{id}/registrations — inscrire Alice au Marathon Lyon",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"runnerId\": {{runnerId1}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/races/{{raceId2}}/registrations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "races",
+                "{{raceId2}}",
+                "registrations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /runners/{id}/races — courses d'Alice (doit en avoir 3)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Alice est inscrite à au moins 2 courses', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.be.an('array');",
+                  "  pm.expect(body.length).to.be.at.least(2);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/runners/{{runnerId1}}/races",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "runners",
+                "{{runnerId1}}",
+                "races"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /runners/{id}/races — courses de Bob (doit en avoir 1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Bob est inscrit à 1 course', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.length).to.eql(1);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/runners/{{runnerId2}}/races",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "runners",
+                "{{runnerId2}}",
+                "races"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🗑️ Cleanup — DELETE",
+      "item": [
+        {
+          "name": "DELETE /runners/{id} — supprimer Bob",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 ou 204', () => {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/runners/{{runnerId2}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "runners",
+                "{{runnerId2}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /runners/{id} — ❌ Bob supprimé",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 404 après suppression', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/runners/{{runnerId2}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "runners",
+                "{{runnerId2}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "runnerId1",
+      "value": ""
+    },
+    {
+      "key": "runnerId2",
+      "value": ""
+    },
+    {
+      "key": "raceId1",
+      "value": ""
+    },
+    {
+      "key": "raceId2",
+      "value": ""
+    },
+    {
+      "key": "raceIdFull",
+      "value": ""
+    }
+  ]
+}
